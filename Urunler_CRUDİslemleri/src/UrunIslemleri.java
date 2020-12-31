@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
 
 
 public class UrunIslemleri extends javax.swing.JFrame {
@@ -24,6 +25,7 @@ public class UrunIslemleri extends javax.swing.JFrame {
       getContentPane().setBackground(new java.awt.Color(102, 102, 102));
         VeritabaniBaglanti();
         IDBekleme();
+        Tablo();
       
         
            Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -53,6 +55,8 @@ public class UrunIslemleri extends javax.swing.JFrame {
         urunid = new javax.swing.JComboBox<>();
         ara = new javax.swing.JButton();
         geri = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablo = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 102, 102));
@@ -181,6 +185,11 @@ public class UrunIslemleri extends javax.swing.JFrame {
         jLabel6.setText("Ürün ID");
 
         urunid.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        urunid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                urunidMouseClicked(evt);
+            }
+        });
 
         ara.setText("Ara");
         ara.addActionListener(new java.awt.event.ActionListener() {
@@ -197,6 +206,27 @@ public class UrunIslemleri extends javax.swing.JFrame {
             }
         });
 
+        tablo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ID", "Urun Adı", "Fiyatı", "Adeti"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tablo);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -212,7 +242,7 @@ public class UrunIslemleri extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(geri, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(191, 191, 191)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(234, 234, 234)
@@ -223,7 +253,11 @@ public class UrunIslemleri extends javax.swing.JFrame {
                             .addComponent(ara)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel6)
-                                .addComponent(urunid, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addComponent(urunid, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,17 +268,20 @@ public class UrunIslemleri extends javax.swing.JFrame {
                         .addComponent(geri)
                         .addComponent(jLabel2)))
                 .addGap(68, 68, 68)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(4, 4, 4)
                         .addComponent(urunid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ara)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 58, Short.MAX_VALUE))
+                        .addComponent(ara)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addGap(63, 63, 63))
         );
 
         pack();
@@ -274,7 +311,7 @@ public class UrunIslemleri extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void ekleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ekleActionPerformed
-      
+   Tablo();      
        try {
            pst=conn.prepareStatement("insert into urunler(urunadi,urunfiyati,urunadeti)values(?,?,?)");
            pst.setString(1, urunadi.getText());
@@ -373,6 +410,10 @@ public class UrunIslemleri extends javax.swing.JFrame {
         
     }//GEN-LAST:event_geriMouseClicked
 
+    private void urunidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_urunidMouseClicked
+           Tablo();
+    }//GEN-LAST:event_urunidMouseClicked
+
     public static void main(String args[]) {
        
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -412,6 +453,20 @@ public class UrunIslemleri extends javax.swing.JFrame {
     }
     }
     
+    public void Tablo(){
+        try{
+            
+            pst=conn.prepareStatement("select*from urunler");
+            rs=pst.executeQuery();
+            tablo.setModel(DbUtils.resultSetToTableModel(rs));
+            
+               
+            
+        }catch(Exception e){
+            
+        }
+    }
+    
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ara;
@@ -426,7 +481,9 @@ public class UrunIslemleri extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton sil;
+    private javax.swing.JTable tablo;
     private javax.swing.JTextField urunadeti;
     private javax.swing.JTextField urunadi;
     private javax.swing.JTextField urunfiyati;
